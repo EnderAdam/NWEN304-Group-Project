@@ -4,6 +4,7 @@ const http = require("http");
 
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
+const productRouter = require('./routes/productRouter');
 
 const app = express();
 
