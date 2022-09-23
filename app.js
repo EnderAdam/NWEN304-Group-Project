@@ -16,12 +16,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use('/products', productRouter);
+
+app.use(function (req, res) {
+    res.status(404);
+
+    // respond with html page
+    if (req.accepts('html')) {
+        res.render('404', {url: req.url});
+        return;
+    }
+
+    // respond with json
+    if (req.accepts('json')) {
+        res.json({error: 'Not found'});
+        return;
+    }
+
+    res.type('txt').send('Not found');
+});
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
 const mongoDB = "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/?retryWrites=true&w=majority";
 
-mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
