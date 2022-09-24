@@ -2,10 +2,16 @@
 <html lang="en">
     <head>
         <title><%= title %></title>
+        <%- include('partials/head'); %>
     </head>
+    <header>
+        <%- include('partials/header'); %>
+    </header>
     <body>
-        <h1><%= title %></h1>
-        <p>Welcome to <%= title %></p>
+        <h1>This is the main page!</h1>
         <img src="hoge.png">
     </body>
+    <footer>
+        <%- include('partials/footer'); %>
+    </footer>
 </html>
