@@ -23,3 +23,9 @@ footer {
     background: #a4a3a3;
     color: #000000; /*text color */
 }
+
+.displayProduct{
+    background: #dccdcd;
+    display: inline-block;
+    padding: 10px;
+}

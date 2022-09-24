@@ -11,7 +11,9 @@
 <h1>This is the product index page!</h1>
 <p>to be implemented</p>
 <p>products:</p>
-<p><%= products %></p>
+<% for(product of products){ %>
+    <%- include('../partials/displayProduct'); %>
+<% } %>
 </body>
 <footer>
     <%- include('../partials/footer'); %>
