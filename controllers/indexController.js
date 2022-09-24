@@ -6,7 +6,7 @@ const index = (req, res) => {
 }
 
 const loginGet = (req, res) => {
-    res.render('login', {title: 'Login'});
+    res.render('login', {error: ''});
 }
 
 const secret = (req, res) => {
@@ -23,13 +23,26 @@ const logoutGet = (req, res, next) => {
 };
 
 const registerGet = (req, res) => {
-    res.render('register', {});
+    res.render('register', {error: ''});
 };
 
-const loginPost = passport.authenticate('local', {
-    failureRedirect: '/login',
-    successRedirect: '/secret',
-});
+const loginPost = (req, res, next) => {
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            console.log(info);
+            return res.render('login', {error: info});
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('secret');
+        });
+    })(req, res, next);
+};
 
 const registerPost = (req, res) => {
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
