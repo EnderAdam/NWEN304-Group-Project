@@ -10,6 +10,21 @@
     <body>
         <h1>This is the edit product page!</h1>
         <p>editing to be implemented</p>
+        <form action="/products/<%= product._id %>/update" method="post">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" value="<%= product.name %>" ><br><br>
+
+            <label for="price">Price:</label><br>
+            <input type="text" id="price" name="price" value="<%= product.price %>"><br><br>
+
+            <label for="description">Description:</label><br>
+            <input type="text" id="description" name="description" value="<%= product.description %>"><br><br>
+
+            <label for="imageUrl">ImageUrl:</label><br>
+            <input type="text" id="imageUrl" name="imageUrl" value="<%= product.imageUrl %>"><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
         <p>product:</p>
         <%- include('../partials/displayProduct'); %>
     </body>
