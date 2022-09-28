@@ -10,6 +10,21 @@
 <body>
 <h1>This is the new product page!</h1>
 <p>to be implemented</p>
+<form action="/products/create" method="post">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" ><br><br>
+
+    <label for="price">Price:</label><br>
+    <input type="text" id="price" name="price" ><br><br>
+
+    <label for="description">Description:</label><br>
+    <input type="text" id="description" name="description"><br><br>
+
+    <label for="imageUrl">ImageUrl:</label><br>
+    <input type="text" id="imageUrl" name="imageUrl"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
 </body>
 <footer>
     <%- include('../partials/footer'); %>
