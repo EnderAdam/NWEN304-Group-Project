@@ -1,5 +1,5 @@
 <div class = "displayProduct">
     <p> name: <%= product.name %>, &nbsp&nbsp&nbsp&nbsp price: <%= product.price %>, &nbsp&nbsp&nbsp&nbsp description: <%= product.description %></p>
-    <p> _id: <%= product._id %> &nbsp&nbsp&nbsp&nbsp imageUrl: <%= product.imageUrl %> </p>
+    <p><a href="\products\<%= product._id %>"> _id: <%= product._id %></a> &nbsp&nbsp&nbsp&nbsp imageUrl: <%= product.imageUrl %> </p>
     <img src="/<%=product.imageUrl%>.png">
 </div>
