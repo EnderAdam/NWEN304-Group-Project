@@ -61,4 +61,4 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 server = http.createServer(app);
-server.listen(3000);
+server.listen(process.env.PORT || 3000)
