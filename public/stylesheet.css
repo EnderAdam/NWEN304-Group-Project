@@ -46,7 +46,7 @@ nav{
 }
 
 body {
-    background-color: #2b2b2b;
+    background-color: #383737;
     color: #e3e2e2;
     text-align: center;
     margin: 0; padding: 0;
@@ -68,4 +68,9 @@ footer {
     display: inline-block;
     padding: 10px;
     margin-bottom: 10px;
+    max-width: 350px;
+    word-wrap: break-word;
+}
+.displayProduct img {
+    max-width: 300px;
 }
