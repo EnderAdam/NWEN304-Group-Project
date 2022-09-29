@@ -50,6 +50,7 @@ body {
     color: #e3e2e2;
     text-align: center;
     margin: 0; padding: 0;
+    margin-bottom: 50px;
 }
 footer {
     position: fixed;
@@ -66,4 +67,5 @@ footer {
     background: #dccdcd;
     display: inline-block;
     padding: 10px;
+    margin-bottom: 10px;
 }
