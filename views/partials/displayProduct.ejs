@@ -1,6 +1,6 @@
 <div class = "displayProduct">
     <p> name: <%= product.name %>, &nbsp&nbsp&nbsp&nbsp price: <%= product.price %>, &nbsp&nbsp&nbsp&nbsp description: <%= product.description %></p>
     <p><a href="\products\<%= product._id %>"> _id: <%= product._id %></a> &nbsp&nbsp&nbsp&nbsp imageUrl: <%= product.imageUrl %> </p>
-    <img src="<%=product.imageUrl%>">
+    <a href="\products\<%= product._id %>"><img src="<%=product.imageUrl%>"></a>
     <p><a href="\products\<%= product._id %>\edit"> edit product</a></p>
 </div>
