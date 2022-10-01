@@ -47,7 +47,7 @@ const registerPost = (req, res) => {
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
             console.log(err);
-            return res.render('register', {account: account, error: err});
+            return res.render('register', {account: account, error: err.message});
         }
         //create a new user
         passport.authenticate('local')(req, res, function () {
@@ -56,6 +56,13 @@ const registerPost = (req, res) => {
     });
 };
 
+const checkAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
 module.exports = {
-    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost
+    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost, checkAuthenticated
 }
