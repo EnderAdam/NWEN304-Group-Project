@@ -3,6 +3,8 @@ const path = require("path");
 const http = require("http");
 const session = require('express-session');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy
+const flash = require('connect-flash');
 
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
@@ -19,19 +21,43 @@ app.use(express.urlencoded({extended: false}));
 app.use(session({
     secret: 'secretKey',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    // cookie: {secure: true}
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(flash());
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use('/products', productRouter);
 
-passport.use(Account.createStrategy());
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
+authUser = (user, password, done) => {
+    let authenticatedUser = Account.authenticate();
+    authenticatedUser(user, password, (err, result) => {
+            if (err) {
+                return done(err);
+            }
+            if (!result) {
+                return done(null, false, {message: 'Incorrect username or password.'});
+            }
+            return done(null, result);
+        }
+    );
+}
+
+passport.use(new LocalStrategy(authUser));
+// passport.use(Account.createStrategy());
+// passport.serializeUser(Account.serializeUser());
+// passport.deserializeUser(Account.deserializeUser());
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+passport.deserializeUser((userObj, done) => {
+    Account.findById(userObj._id, (err, user) => {
+        done(err, user);
+    });
+});
 
 app.use(function (req, res) {
     res.status(404);
