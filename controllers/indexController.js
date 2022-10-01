@@ -1,8 +1,5 @@
 const passport = require("passport");
 const Account = require("../models/account");
-const connectEnsureLogin = require("connect-ensure-login");
-
-// Get functions
 
 const index = (req, res) => {
     res.render('index', {title: 'Express'});
@@ -29,29 +26,21 @@ const registerGet = (req, res) => {
     res.render('register', {error: ''});
 };
 
-// Post Methods
-
 const loginPost = (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect: '/secret',
-        failureRedirect: '/login',
-        failureFlash: true
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.render('login', {error: info.message});
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('secret');
+        });
     })(req, res, next);
-    // }, function (err, user, info) {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     if (!user) {
-    //         console.log(info);
-    //         return res.render('login', {error: info});
-    //     }
-    //     req.logIn(user, function (err) {
-    //         if (err) {
-    //             return next(err);
-    //         }
-    //         return res.redirect('secret');
-    //     });
-    // })(req, res, next);
 };
 
 const registerPost = (req, res) => {
@@ -67,11 +56,6 @@ const registerPost = (req, res) => {
     });
 };
 
-const checkAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) { return next() }
-    res.redirect("/login")
-}
-
 module.exports = {
-    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost, checkAuthenticated
+    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost
 }
