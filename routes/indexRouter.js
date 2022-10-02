@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const {
     index,
     loginGet,
@@ -10,7 +11,6 @@ const {
     registerPost,
     checkAuthenticated, checkNotAuthenticated
 } = require('../controllers/indexController');
-require('connect-ensure-login');
 // GET Routes
 router.get('/', index);
 
@@ -26,6 +26,18 @@ router.get('/register', checkNotAuthenticated, registerGet);
 router.get('/ping', function (req, res) {
     res.status(200).send("pong!");
 });
+
+router.get('/oauth2/redirect/google/page',
+    passport.authenticate('google', {scope: ['profile', 'email']})
+);
+
+router.get('/oauth2/redirect/google',
+    passport.authenticate('google', {failureRedirect: '/login'}),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        res.redirect('/secret');
+    }
+);
 
 // POST Routes
 router.post('/login', loginPost);
