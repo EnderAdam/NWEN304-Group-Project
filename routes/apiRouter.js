@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const {create, show, update, destroy} = require('../controllers/apiController');
 
-router.get('/:id', show);
-router.post('/create', create);
-router.put('/:id', update);
-router.delete('/:id', destroy);
+router.get('/products/:id', show);
+router.post('/products/create', create); //TODO STUFF
+router.put('/products/:id', update);
+router.delete('/products/:id',  destroy);
 
 module.exports = router;
