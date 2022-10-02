@@ -8,19 +8,19 @@ const {
     registerGet,
     loginPost,
     registerPost,
-    checkAuthenticated
+    checkAuthenticated, checkNotAuthenticated
 } = require('../controllers/indexController');
 require('connect-ensure-login');
 // GET Routes
 router.get('/', index);
 
-router.get('/login', loginGet);
+router.get('/login', checkNotAuthenticated, loginGet);
 
 router.get('/secret', checkAuthenticated, secret);
 
 router.get('/logout', logoutGet);
 
-router.get('/register', registerGet);
+router.get('/register', checkNotAuthenticated, registerGet);
 
 //TODO: Delete this route
 router.get('/ping', function (req, res) {

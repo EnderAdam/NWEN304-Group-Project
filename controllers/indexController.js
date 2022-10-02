@@ -63,6 +63,13 @@ const checkAuthenticated = (req, res, next) => {
     res.redirect('/login');
 }
 
+const checkNotAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    next();
+}
+
 module.exports = {
-    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost, checkAuthenticated
+    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost, checkAuthenticated, checkNotAuthenticated
 }
