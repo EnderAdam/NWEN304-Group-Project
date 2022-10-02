@@ -1,14 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const {index, loginGet, logoutGet, secret, registerGet, loginPost, registerPost} = require('../controllers/indexController');
-const connectEnsureLogin = require('connect-ensure-login');
-
+const {
+    index,
+    loginGet,
+    logoutGet,
+    secret,
+    registerGet,
+    loginPost,
+    registerPost,
+    checkAuthenticated
+} = require('../controllers/indexController');
+require('connect-ensure-login');
 // GET Routes
 router.get('/', index);
 
 router.get('/login', loginGet);
 
-router.get('/secret', connectEnsureLogin.ensureLoggedIn(), secret);
+router.get('/secret', checkAuthenticated, secret);
 
 router.get('/logout', logoutGet);
 
