@@ -60,7 +60,7 @@ passport.use(new GoogleStrategy({
         // options for the google strategy in environment variables
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:3000/oauth2/redirect/google'
+        callbackURL: process.env.GOOGLE_CLIENT_CALLBACK
     },
     function (accessToken, refreshToken, profile, cb) {
         Account.findOne({googleId: profile.id}, function (err, user) {
