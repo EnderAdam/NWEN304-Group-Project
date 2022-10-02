@@ -22,11 +22,6 @@ router.get('/logout', logoutGet);
 
 router.get('/register', checkNotAuthenticated, registerGet);
 
-//TODO: Delete this route
-router.get('/ping', function (req, res) {
-    res.status(200).send("pong!");
-});
-
 router.get('/oauth2/redirect/google/page',
     passport.authenticate('google', {scope: ['profile', 'email']})
 );
