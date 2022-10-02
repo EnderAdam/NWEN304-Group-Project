@@ -26,6 +26,18 @@ const registerGet = (req, res) => {
     res.render('register', {error: ''});
 };
 
+const googlePage = (req, res) => {
+    passport.authenticate('google', {scope: ['profile', 'email']});
+}
+
+const googleCallback = (req, res) => {
+    passport.authenticate('google', {failureRedirect: '/login'},
+        res.redirect('/secret')
+    );
+}
+
+// Post functions
+
 const loginPost = (req, res, next) => {
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -63,6 +75,23 @@ const checkAuthenticated = (req, res, next) => {
     res.redirect('/login');
 }
 
+const checkNotAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    next();
+}
+
 module.exports = {
-    index, loginGet, secret, logoutGet, registerGet, loginPost, registerPost, checkAuthenticated
+    index,
+    loginGet,
+    secret,
+    logoutGet,
+    registerGet,
+    loginPost,
+    registerPost,
+    checkAuthenticated,
+    checkNotAuthenticated,
+    googlePage,
+    googleCallback
 }

@@ -5,6 +5,9 @@ const session = require('express-session');
 const MongoDBStore = require('express-mongodb-session')(session);
 const passport = require('passport');
 const mongoose = require('mongoose');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const dotenv = require('dotenv');
+dotenv.config();
 
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
@@ -44,8 +47,8 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  res.locals.auth = !!req.isAuthenticated();
-  next();
+    res.locals.auth = !!req.isAuthenticated();
+    next();
 });
 
 app.use('/', indexRouter);
@@ -53,6 +56,32 @@ app.use('/api', apiRouter);
 app.use('/products', productRouter);
 
 passport.use(Account.createStrategy());
+passport.use(new GoogleStrategy({
+        // options for the google strategy in environment variables
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: 'http://localhost:3000/oauth2/redirect/google'
+    },
+    function (accessToken, refreshToken, profile, cb) {
+        Account.findOne({googleId: profile.id}, function (err, user) {
+            if (err) {
+                return cb(err);
+            }
+            if (!user) {
+                user = new Account({
+                    username: profile.displayName,
+                    googleId: profile.id
+                });
+                user.save(function (err) {
+                    if (err) console.log(err);
+                    return cb(err, user);
+                });
+            } else {
+                return cb(err, user);
+            }
+        });
+    }
+));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
