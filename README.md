@@ -43,6 +43,6 @@ should keep track of user purchases or something
 
 Misc to do
 - [ ] Input sanitisation
-- [ ] Pipeline to deploy to server
+- [x] Pipeline to deploy to server
 - [ ] Add hypermedia links to the responses
 - 
