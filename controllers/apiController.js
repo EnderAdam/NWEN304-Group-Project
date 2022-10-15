@@ -1,4 +1,8 @@
 const Product = require("../models/product");
+const passport = require("passport");
+const jwt = require('jsonwebtoken');
+
+
 const create = (req, res) => {
     const {name, price, description, imageUrl} = req.body;
 
@@ -33,6 +37,11 @@ const create = (req, res) => {
 const show = (req, res) => {
     const {id} = req.params;
     Product.findById(id).then(product => {
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found"
+            });
+        }
         res.status(200).json({
             message: "Product found",
             product
@@ -56,6 +65,11 @@ const update = (req, res) => {
 
     const {id} = req.params;
     Product.findByIdAndUpdate(id, {name, price, description, imageUrl}, {new: true}).then(product => {
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found"
+            });
+        }
         res.status(200).json({
             message: "Product updated successfully",
             product
@@ -70,6 +84,7 @@ const update = (req, res) => {
 
 const destroy = (req, res) => {
     const {id} = req.params;
+    //TODO DOESNT CHECK IF PRODUCT EXISTS FIRST
     Product.findByIdAndDelete(id).then(() => {
         res.status(200).json({
             message: "Product deleted successfully"
@@ -82,9 +97,31 @@ const destroy = (req, res) => {
     });
 }
 
+const login = (req, res, next) => {
+    passport.authenticate('local', function (err, user, info) {
+        if (err || !user) {
+            return res.status(401).json({
+                message: "Login failed",
+            });
+        }
+        req.logIn(user, {session: false}, function (err) {
+            if (err) {
+                return res.status(401).json({
+                    message: "Login failed",
+                });
+            }
+            const body = {_id: user._id, email: user.email};
+            const token = jwt.sign({user: body}, 'secret'); //TODO Change
+
+            return res.json({token});
+        });
+    })(req, res, next);
+}
+
 module.exports = {
     show,
     create,
     update,
-    destroy
+    destroy,
+    login
 }
