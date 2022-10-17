@@ -28,7 +28,6 @@ const newProduct = (req, res) => {
  * @param res - The response object
  */
 const create = (req, res) => {
-    //TODO REQUIRE AUTHENTICATION
     const {name, price, description, imageUrl} = req.body;
 
     // This should be enforced by the HTML Form anyway
@@ -73,7 +72,6 @@ const show = (req, res) => {
  * @param res - The response object
  */
 const edit = (req, res) => {
-    //TODO REQUIRE AUTHENTICATION
     const {id} = req.params;
     Product.findById(id).then(product => {
         res.render("products/edit", {product: product});
@@ -88,7 +86,6 @@ const edit = (req, res) => {
  * @param res - The response object
  */
 const update = (req, res) => {
-    //TODO REQUIRE AUTHENTICATION
     const {name, price, description, imageUrl} = req.body;
 
     // This should be enforced by the HTML Form anyway
@@ -111,12 +108,35 @@ const update = (req, res) => {
  * @param res - The response object
  */
 const destroy = (req, res) => {
-    //TODO REQUIRE AUTHENTICATION
     const {id} = req.params;
     Product.findByIdAndDelete(id).then(() => {
         res.status(200).redirect("/products");
     }).catch(err => {
         res.status(404);
+    });
+}
+
+/**
+ * Purchase a given product and redirect to previous purchases
+ * @param req - The request object
+ * @param res - The response object
+ */
+const purchase = (req, res) => {
+    const {id} = req.params;
+    Product.findById(id).then(product => {
+        if (!product) {
+            res.status(404).redirect("/products");
+        }
+        // Get the user
+        const user = req.user;
+        user.purchases.push(product);
+        user.save().then(() => {
+            res.status(200).redirect("/account/purchases");
+        }).catch(() => {
+            res.status(400).redirect("/products");
+        });
+    }).catch(() => {
+        res.status(404).redirect("/products");
     });
 }
 
@@ -127,5 +147,6 @@ module.exports = {
     show,
     edit,
     update,
-    destroy
+    destroy,
+    purchase
 }
