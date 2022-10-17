@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>edit</title>
+    <title>Purchases-The Connoisseurs</title>
     <%- include('../partials/head'); %>
 </head>
 <header>
     <%- include('../partials/header'); %>
 </header>
 <body>
-<%=purchases%>
+    <p>Here are your purchased products</p>
+    <p>products:</p>
+    <% for(product of purchases){ %>
+        <%console.log(product)%>
+        <%- include('../partials/displayProduct'); %>
+    <% } %>
 </body>
 <footer>
     <%- include('../partials/footer'); %>

@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>edit</title>
+    <title>Products-The Connoisseurs</title>
     <%- include('../partials/head'); %>
 </head>
 <header>
     <%- include('../partials/header'); %>
 </header>
-<body>
-<h1>This is the product index page!</h1>
-<p>to be implemented</p>
-<p>products:</p>
-<% for(product of products){ %>
-    <%- include('../partials/displayProduct'); %>
-<% } %>
-</body>
+    <body>
+        <h1>This is the product index page!</h1>
+
+        <p>products:</p>
+        <% for(product of products){ %>
+        <%console.log(product)%>
+            <%- include('../partials/displayProduct'); %>
+        <% } %>
+    </body>
 <footer>
     <%- include('../partials/footer'); %>
 </footer>
