@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>edit</title>
+    <title>Show Product-The Connoisseurs</title>
     <%- include('../partials/head'); %>
 </head>
 <header>
     <%- include('../partials/header'); %>
 </header>
 <body>
-<h1>This is the show product page!</h1>
-<p>to be implemented</p>
-<p>product:</p>
-<%- include('../partials/displayProduct'); %>
-<ul class="nav-links">
-    <% if (locals.auth) { %>
-        <li class="btn"><a type="button" href="\products\<%= product._id %>\edit">Edit Product</a></li>
-        <li class="btn"><a type="button" href="\products\<%= product._id %>\delete">Delete Product</a></li>
-    <% } %>
-</ul>
+    <h1>This is the show product page!</h1>
+    <p>product:</p>
+    <%- include('../partials/displayProduct'); %>
+    <ul class="nav-links">
+        <% if (locals.auth) { %>
+            <li class="btn"><a type="button" href="\products\<%= product._id %>\edit">Edit Product</a></li>
+            <li class="btn"><a type="button" href="\products\<%= product._id %>\delete">Delete Product</a></li>
+        <% } %>
+    </ul>
 </body>
 <footer>
     <%- include('../partials/footer'); %>
