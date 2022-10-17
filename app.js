@@ -12,6 +12,7 @@ dotenv.config();
 const indexRouter = require('./routes/indexRouter');
 const apiRouter = require('./routes/apiRouter');
 const productRouter = require('./routes/productRouter');
+const accountRouter = require('./routes/accountRouter');
 const Account = require('./models/account');
 
 // Set up mongoose connection
@@ -54,6 +55,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use('/products', productRouter);
+app.use('/account', accountRouter);
 
 passport.use(Account.createStrategy());
 passport.use(new GoogleStrategy({
