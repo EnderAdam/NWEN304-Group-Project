@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
+const Product = require('./product');
 
 const User = new Schema({
     username: String,
     password: String,
-    purchases: [{
-        type: String
-    }]
+    purchases: [Product.schema]
 });
 
 // Setting up the passport plugin

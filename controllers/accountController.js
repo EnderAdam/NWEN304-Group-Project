@@ -5,7 +5,9 @@
  */
 const purchases = (req, res) => {
     const user = req.user;
-    res.render("account/purchases", {purchases: user.purchases});
+    user.populate('purchases').then(user => {
+        res.render("account/purchases", {purchases: user.purchases});
+    });
 }
 
 module.exports = {
