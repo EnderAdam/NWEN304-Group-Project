@@ -17,7 +17,7 @@ const Account = require('./models/account');
 
 // Set up mongoose connection
 
-const mongoDB = "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/database?retryWrites=true&w=majority";
+const mongoDB = process.env.NODE_ENV === 'test' ? "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/test?retryWrites=true&w=majority" : "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/database?retryWrites=true&w=majority";
 
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
@@ -108,3 +108,5 @@ app.use(function (req, res) {
 
 server = http.createServer(app);
 server.listen(process.env.PORT || 3000)
+
+module.exports = server;
