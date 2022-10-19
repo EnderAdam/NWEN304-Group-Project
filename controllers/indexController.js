@@ -55,7 +55,32 @@ const loginPost = (req, res, next) => {
     })(req, res, next);
 };
 
+/**
+ * Checks if the password is strong enough
+ * Password must be at least 5 characters long
+ * Password must contain at least one uppercase and one lowercase letter
+ * Password must contain at least one special character
+ * @param password the password to check
+ * @returns {boolean} true if the password is strong enough, false otherwise
+ */
+const passwordIsDifficultEnough = (password) => {
+    if (password.length < 5) {
+        return false;
+    }
+    if (password.toLowerCase() === password || password.toUpperCase() === password) {
+        return false;
+    }
+
+    let spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    return spChars.test(password);
+}
+
 const registerPost = (req, res) => {
+    //check if the password is strong enough
+    if (!passwordIsDifficultEnough(req.body.password)) {
+        return res.render('register', {error: ''});
+    }
+
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
             console.log(err);
