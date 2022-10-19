@@ -36,7 +36,7 @@ app.use(session({
     saveUninitialized: true,
     resave: true,
     secret: 'secret',
-    cookie: {secure: false, maxAge: 1000 * 60 * 60 * 24 * 7, sameSite: "strict"},
+    cookie: {secure: false, maxAge: 1000 * 60 * 60 * 24 * 7, sameSite: "lax"},
     store: new MongoDBStore({
         uri: mongoDB,
         collection: 'sessions'
