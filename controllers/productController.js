@@ -6,9 +6,12 @@ const Product = require("../models/product");
  * @param res - The response object
  */
 const index = (req, res) => {
+    let startTime = Date.now();
     Product.find().then(products => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Database took ${Date.now() - startTime}ms`);
         res.render("products/index", {products: products});
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Render took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(404).render('404');
     });
 }
@@ -43,11 +46,14 @@ const create = (req, res) => {
         imageUrl
     });
 
+    let startTime = Date.now();
     // Save the product in the database and redirect to the product page
     product.save().then(() => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Creation Database took ${Date.now() - startTime}ms`);
         // Redirect to the new product page
         res.status(201).redirect(`/products/${product._id}`);
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Creation Redirect took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(400).redirect("/products/new");
     });
 }
@@ -59,9 +65,12 @@ const create = (req, res) => {
  */
 const show = (req, res) => {
     const {id} = req.params;
+    let startTime = Date.now();
     Product.findById(id).then(product => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Database took ${Date.now() - startTime}ms`);
         res.render("products/show", {product: product});
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Render took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(404).render('404');
     });
 }
@@ -73,9 +82,12 @@ const show = (req, res) => {
  */
 const edit = (req, res) => {
     const {id} = req.params;
+    let startTime = Date.now();
     Product.findById(id).then(product => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Edit Database took ${Date.now() - startTime}ms`);
         res.render("products/edit", {product: product});
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Edit Render took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(404).render('404');
     });
 }
@@ -95,9 +107,13 @@ const update = (req, res) => {
     }
 
     const {id} = req.params;
+
+    let startTime = Date.now();
     Product.findByIdAndUpdate(id, {name, price, description, imageUrl}, {new: true}).then(product => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Update Database took ${Date.now() - startTime}ms`);
         res.status(200).redirect(`/products/${product._id}`);
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Update Redirect took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(400).redirect("/products/edit");
     });
 }
@@ -109,9 +125,12 @@ const update = (req, res) => {
  */
 const destroy = (req, res) => {
     const {id} = req.params;
+    let startTime = Date.now();
     Product.findByIdAndDelete(id).then(() => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Deletion Database took ${Date.now() - startTime}ms`);
         res.status(200).redirect("/products");
-    }).catch(err => {
+        if (process.env.DEBUG) console.debug(`[DEBUG] Product Deletion Redirect took ${Date.now() - startTime}ms`);
+    }).catch(() => {
         res.status(404);
     });
 }
@@ -123,6 +142,7 @@ const destroy = (req, res) => {
  */
 const purchase = (req, res) => {
     const {id} = req.params;
+    let startTime = Date.now();
     Product.findById(id).then(product => {
         if (!product) {
             res.status(404).redirect("/products");
@@ -131,7 +151,9 @@ const purchase = (req, res) => {
         const user = req.user;
         user.purchases.push(product);
         user.save().then(() => {
+            if (process.env.DEBUG) console.debug(`[DEBUG] Product Purchase Database took ${Date.now() - startTime}ms`);
             res.status(200).redirect("/account/purchases");
+            if (process.env.DEBUG) console.debug(`[DEBUG] Product Purchase Redirect took ${Date.now() - startTime}ms`);
         }).catch(() => {
             res.status(400).redirect("/products");
         });
