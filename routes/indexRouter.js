@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const {
     index,
     loginGet,
@@ -9,6 +10,8 @@ const {
     registerPost,
     checkNotAuthenticated,
     isAdmin,
+    forgotPasswordPost,
+    forgotPasswordGet,
     googlePage,
     googleCallback
 } = require('../controllers/indexController');
@@ -16,6 +19,8 @@ const {
 router.get('/', index);
 
 router.get('/login', checkNotAuthenticated, loginGet);
+
+router.get('/secret', isAdmin, secret);
 
 router.get('/logout', logoutGet);
 
@@ -29,5 +34,9 @@ router.get('/oauth2/redirect/google', googleCallback);
 router.post('/login', loginPost);
 
 router.post('/register', registerPost);
+
+router.post('/forgotPassword', forgotPasswordPost);
+
+router.get('/forgotPassword', forgotPasswordGet);
 
 module.exports = router;

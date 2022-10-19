@@ -1,5 +1,10 @@
 const passport = require("passport");
 const Account = require("../models/account");
+const sendEmail = require("./sendEmail");
+const {
+    v1: uuidv1,
+    v4: uuidv4,
+} = require('uuid');
 
 const index = (req, res) => {
     res.render('index', {title: 'Express'});
@@ -110,6 +115,27 @@ const isAdmin = (req, res, next) => {
     res.redirect('/login');
 }
 
+const forgotPasswordPost = (req, res) => {
+    Account.findOne({username: req.body.username}, async function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.render('forgotPassword', {error: err.message});
+        }
+        if (user) {
+            const id = uuidv1();
+            //send email
+            console.log("Sending email" + id);
+            await sendEmail(user.username, "Password reset",
+                "Click on the link to reset your password: http://localhost:3000/resetPassword/" + id);
+        }
+        res.render('forgotPassword', {error: 'No user with that email address exists'});
+    });
+}
+
+const forgotPasswordGet = (req, res) => {
+    res.render('forgotPassword', {error: ''});
+}
+
 module.exports = {
     index,
     loginGet,
@@ -121,5 +147,7 @@ module.exports = {
     checkNotAuthenticated,
     googlePage,
     googleCallback,
-    isAdmin
+    isAdmin,
+    forgotPasswordPost,
+    forgotPasswordGet
 }
