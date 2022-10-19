@@ -9,7 +9,7 @@ const {
     registerGet,
     loginPost,
     registerPost,
-    checkNotAuthenticated, forgotPasswordPost, forgotPasswordGet, isAdmin
+    checkNotAuthenticated, forgotPasswordPost, forgotPasswordGet, isAdmin, resetPasswordGet, resetPasswordPost
 } = require('../controllers/indexController');
 // GET Routes
 router.get('/', index);
@@ -43,5 +43,9 @@ router.post('/register', registerPost);
 router.post('/forgotPassword', forgotPasswordPost);
 
 router.get('/forgotPassword', forgotPasswordGet);
+
+router.get('/resetPassword/:userId/:token', resetPasswordGet);
+
+router.post('/resetPassword/:userId/:token', resetPasswordPost);
 
 module.exports = router;
