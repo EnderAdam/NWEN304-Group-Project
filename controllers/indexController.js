@@ -55,7 +55,32 @@ const loginPost = (req, res, next) => {
     })(req, res, next);
 };
 
+const passwordIsDifficultEnough = (password) => {
+    if (password.length < 5) {
+        return false;
+    }
+    if (password.toLowerCase() === password || password.toUpperCase() === password) {
+        return false;
+    }
+    return checkIfStringHasSpecialChar(password);
+}
+
+//https://thispointer.com/javascript-check-if-string-contains-special-characters/
+function checkIfStringHasSpecialChar(_string) {
+    let spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    if (spChars.test(_string)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const registerPost = (req, res) => {
+    //check if the password is strong enough
+    if (!passwordIsDifficultEnough(req.body.password)) {
+        return res.render('register', {error: ''});
+    }
+
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
         if (err) {
             console.log(err);
