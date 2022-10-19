@@ -1,8 +1,9 @@
 const passport = require("passport");
 const Account = require("../models/account");
 const sendEmail = require("./sendEmail");
+const Token = require('../models/token');
+
 const {
-    v1: uuidv1,
     v4: uuidv4,
 } = require('uuid');
 
@@ -122,11 +123,14 @@ const forgotPasswordPost = (req, res) => {
             return res.render('forgotPassword', {error: err.message});
         }
         if (user) {
-            const id = uuidv1();
+            let token = await new Token ({
+                userId: user._id,
+                token: uuidv4(),
+            }).save();
             //send email
-            console.log("Sending email" + id);
+            console.log("Sending email" + token);
             await sendEmail(user.username, "Password reset",
-                "Click on the link to reset your password: http://localhost:3000/resetPassword/" + id);
+                "Click on the link to reset your password: http://localhost:3000/resetPassword/" + token.userId + "/" + token.token);
         }
         res.render('forgotPassword', {error: 'No user with that email address exists'});
     });
@@ -134,6 +138,39 @@ const forgotPasswordPost = (req, res) => {
 
 const forgotPasswordGet = (req, res) => {
     res.render('forgotPassword', {error: ''});
+}
+
+const resetPasswordGet = (req, res) => {
+    res.render('resetPassword', {error: ''});
+}
+
+const resetPasswordPost = (req, res) => {
+    console.log(req);
+    const {userId} = req.params;
+    const {token} = req.params;
+
+    console.log(userId + " " + token);
+    Account.findOne({_id: userId}, async function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.render('resetPassword', {error: err.message});
+        }
+        if (user) {
+            console.log("User found");
+            let token = await Token.findOne({userId: user._id});
+            if (token.token === token) {
+                user.setPassword(req.body.password, function (err) {
+                    if (err) {
+                        console.log(err);
+                        return res.render('resetPassword', {error: err.message});
+                    }
+                    user.save();
+                    res.redirect('/login');
+                });
+            }
+        }
+        res.render('resetPassword', {error: 'No user with that email address exists'});
+    });
 }
 
 module.exports = {
@@ -149,5 +186,7 @@ module.exports = {
     googleCallback,
     isAdmin,
     forgotPasswordPost,
-    forgotPasswordGet
+    forgotPasswordGet,
+    resetPasswordGet,
+    resetPasswordPost
 }
