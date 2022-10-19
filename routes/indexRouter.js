@@ -9,19 +9,20 @@ const {
     registerGet,
     loginPost,
     registerPost,
-    checkAuthenticated, checkNotAuthenticated
+    checkNotAuthenticated, isAdmin
 } = require('../controllers/indexController');
 // GET Routes
 router.get('/', index);
 
 router.get('/login', checkNotAuthenticated, loginGet);
 
-router.get('/secret', checkAuthenticated, secret);
+router.get('/secret', isAdmin, secret);
 
 router.get('/logout', logoutGet);
 
 router.get('/register', checkNotAuthenticated, registerGet);
 
+//TODO: Move the following functions to indexController.js
 router.get('/oauth2/redirect/google/page',
     passport.authenticate('google', {scope: ['profile', 'email']})
 );

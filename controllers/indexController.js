@@ -82,6 +82,13 @@ const checkNotAuthenticated = (req, res, next) => {
     next();
 }
 
+const isAdmin = (req, res, next) => {
+    if (req.user.isAdmin) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
 module.exports = {
     index,
     loginGet,
@@ -93,5 +100,6 @@ module.exports = {
     checkAuthenticated,
     checkNotAuthenticated,
     googlePage,
-    googleCallback
+    googleCallback,
+    isAdmin
 }

@@ -6,7 +6,8 @@ const Product = require('./product');
 const User = new Schema({
     username: String,
     password: String,
-    purchases: [Product.schema]
+    purchases: [Product.schema],
+    isAdmin: boolean = false
 });
 
 // Setting up the passport plugin
