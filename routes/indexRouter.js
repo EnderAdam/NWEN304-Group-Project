@@ -9,7 +9,7 @@ const {
     registerGet,
     loginPost,
     registerPost,
-    checkNotAuthenticated, isAdmin
+    checkNotAuthenticated, forgotPasswordPost, forgotPasswordGet, isAdmin
 } = require('../controllers/indexController');
 // GET Routes
 router.get('/', index);
@@ -39,5 +39,9 @@ router.get('/oauth2/redirect/google',
 router.post('/login', loginPost);
 
 router.post('/register', registerPost);
+
+router.post('/forgotPassword', forgotPasswordPost);
+
+router.get('/forgotPassword', forgotPasswordGet);
 
 module.exports = router;
