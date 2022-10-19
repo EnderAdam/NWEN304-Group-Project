@@ -9,7 +9,7 @@ const {
     registerGet,
     loginPost,
     registerPost,
-    checkAuthenticated, checkNotAuthenticated, isAdmin
+    checkNotAuthenticated, isAdmin
 } = require('../controllers/indexController');
 // GET Routes
 router.get('/', index);
