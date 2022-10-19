@@ -55,6 +55,14 @@ const loginPost = (req, res, next) => {
     })(req, res, next);
 };
 
+/**
+ * Checks if the password is strong enough
+ * Password must be at least 5 characters long
+ * Password must contain at least one uppercase and one lowercase letter
+ * Password must contain at least one special character
+ * @param password the password to check
+ * @returns {boolean} true if the password is strong enough, false otherwise
+ */
 const passwordIsDifficultEnough = (password) => {
     if (password.length < 5) {
         return false;
@@ -62,17 +70,9 @@ const passwordIsDifficultEnough = (password) => {
     if (password.toLowerCase() === password || password.toUpperCase() === password) {
         return false;
     }
-    return checkIfStringHasSpecialChar(password);
-}
 
-//https://thispointer.com/javascript-check-if-string-contains-special-characters/
-function checkIfStringHasSpecialChar(_string) {
     let spChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-    if (spChars.test(_string)) {
-        return true;
-    } else {
-        return false;
-    }
+    return spChars.test(password);
 }
 
 const registerPost = (req, res) => {
