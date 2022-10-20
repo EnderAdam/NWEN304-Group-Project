@@ -9,10 +9,6 @@ const loginGet = (req, res) => {
     res.render('login', {error: ''});
 }
 
-const secret = (req, res) => {
-    res.render('secret', {title: 'Secret Page'})
-};
-
 const logoutGet = (req, res, next) => {
     req.logout(function (err) {
         if (err) {
@@ -27,13 +23,13 @@ const registerGet = (req, res) => {
 };
 
 const googlePage = (req, res) => {
-    passport.authenticate('google', {scope: ['profile', 'email']});
+    passport.authenticate('google', {scope: ['profile', 'email']})(req, res);
 }
 
 const googleCallback = (req, res) => {
-    passport.authenticate('google', {failureRedirect: '/login'},
-        res.redirect('/secret')
-    );
+    passport.authenticate('google', {failureRedirect: '/login'})(req, res, function () {
+        res.redirect('/');
+    });
 }
 
 // Post functions
@@ -50,7 +46,7 @@ const loginPost = (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            return res.redirect('secret');
+            return res.redirect('/');
         });
     })(req, res, next);
 };
@@ -88,7 +84,7 @@ const registerPost = (req, res) => {
         }
         //create a new user
         passport.authenticate('local')(req, res, function () {
-            res.redirect('/secret');
+            res.redirect('/');
         });
     });
 };
@@ -117,7 +113,6 @@ const isAdmin = (req, res, next) => {
 module.exports = {
     index,
     loginGet,
-    secret,
     logoutGet,
     registerGet,
     loginPost,

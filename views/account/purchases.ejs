@@ -8,10 +8,14 @@
     <%- include('../partials/header'); %>
 </header>
 <body>
-    <p>Here are your purchased products</p>
-    <p>products:</p>
-    <% for(product of purchases){ %>
-        <%- include('../partials/displayProduct'); %>
+    <% if (purchases.length === 0 ) {%>
+        <h1>You have no purchases</h1>
+    <% } else { %>
+        <p>Here are your purchased products</p>
+        <p>products:</p>
+        <% for(product of purchases){ %>
+            <%- include('../partials/displayProduct'); %>
+        <% } %>
     <% } %>
 </body>
 <footer>
