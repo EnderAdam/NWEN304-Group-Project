@@ -12,7 +12,7 @@
     <p>product:</p>
     <%- include('../partials/displayProduct'); %>
     <ul class="nav-links">
-        <% if (locals.auth) { %>
+        <% if (locals.admin) { %>
             <li class="btn"><a type="button" href="\products\<%= product._id %>\edit">Edit Product</a></li>
             <li class="btn"><a type="button" href="\products\<%= product._id %>\delete">Delete Product</a></li>
         <% } %>
