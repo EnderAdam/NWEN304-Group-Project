@@ -1,48 +1,26 @@
-# Work Splitting
-### Core
-- [x] Come up with idea for the site - shitty shopping page
-	- [x] Theme - Books, Pens, Umbrella, Clothes, etc
-- [ ] Authentication - Tarik - Recent Lectures
-	- [ ] OAuth stuffs
-- [ ] Database work and stuff + API - Jacob
-- [ ] Website design/layout? - Finniann
-- [ ] Client side code - Finnnniannn
-- [ ] Deploy to server - Isleep
+## Readme Questions
+a. How to use your system(both for the web application and with REST API)  
+- To use the web application navigate to https://nwen304theconnoisseurs.herokuapp.com/  
+- Using the web application is straightforward, and contains a Homepage with a navigation bar that provides links to view all products, log in, register and log in with Google.  
+- Once a user is logged in, the navigation bar will replace the links to login/register/login with google with links to purchase history and log out.
+- The products page displays all products in the database, and clicking on a product will take you to the product page.
+- The product page displays the product information, and allows you to purchase the product if logged in.
+- The purchase history page displays all the products that the user has purchased.
+- If the user is authenticated as the admin, with username "admin" and password "admin", the navigation bar will have an additional link to create a new product and individual product pages will have edit and delete buttons visible.
 
-### Completion
-- [ ] Performance Testing - Everyone
+To use the REST API, you can use the following endpoints:
+- POST /login - log in with username and password, and receive a JWT token
+- The remaining endpoints all require a JWT token to be passed in the header as "Authorization: Bearer <token>"
+- POST /products/create - creates a new product
+- GET /products - returns all products
+- GET /products/:id - returns a single product
+- PUT /products/:id - updates a product
+- DELETE /products/:id - deletes a product
 
-### Challenge
-- [ ] Recommendation service
-	- [ ] Use location from browser to recommend umbrella if raining
-	- [ ] Make obvious box if the user declines location or if the recommendation is active
-- [ ] Password reset
-- [ ] Timeout
-
-
-## Layout
-- Home screen of products and login buttons
-- Login/signup screens
-- Individual product page
-- Once authenticated, can view cart and orders
-- Admins have separate pages and can create delete update etc products
+b. What the interface is (both for the web application and with REST API)  
+The interface for the REST API is a JSON object, and the interface for the web application is a webpage.  
 
 
-
-
-## Extra Notes
-add cart and order history to each user - route: /orders and /cart - should be easy to store the user information in the database and then just use the user id to get the cart and order history
-add secret key to the register form and if it is correct, make the user admin
-need admin auth to view and access the create, update, delete etc
-hide admin buttons if the user is not an admin
-should keep track of user purchases or something
-- just ask the user for their location and then recommend if raining, easy  
-- record colour of the books that a user buys and then choose that colour of umbrella lol
-
-
-
-Misc to do
-- [ ] Input sanitisation
-- [x] Pipeline to deploy to server
-- [ ] Add hypermedia links to the responses
-- 
+c. What error handling has been implemented in your system(both for the web application and with REST API)  
+Error handling has been implemented the same for the web application and the REST API, with each database call having .catch blocks to catch any unwanted errors and display them to the user  
+Unknown resources are also handled by the server, and will return a 404 error, either as a webpage or JSON object depending on the request type.
