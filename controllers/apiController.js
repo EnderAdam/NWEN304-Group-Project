@@ -39,6 +39,24 @@ const create = (req, res) => {
 }
 
 /**
+ * Return all products in JSON form
+ * @param req - The request object
+ * @param res - The response object
+ */
+const index = (req, res) => {
+    Product.find().then(products => {
+        res.status(200).json({
+            products
+        });
+    }).catch(err => {
+        res.status(500).json({
+            message: "Products not found",
+            err
+        });
+    });
+}
+
+/**
  * Return a given product in JSON form based on the provided id
  * @param req - The request object
  * @param res - The response object
@@ -103,7 +121,6 @@ const update = (req, res) => {
  */
 const destroy = (req, res) => {
     const {id} = req.params;
-    //TODO DOESNT CHECK IF PRODUCT EXISTS FIRST
     Product.findByIdAndDelete(id).then(() => {
         res.status(200).json({
             message: "Product deleted successfully"
@@ -161,6 +178,7 @@ const authenticateToken = (req, res, next) => {
 }
 
 module.exports = {
+    index,
     show,
     create,
     update,
