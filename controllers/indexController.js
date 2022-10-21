@@ -84,7 +84,7 @@ const passwordIsDifficultEnough = (password) => {
 const registerPost = (req, res) => {
     //check if the password is strong enough
     if (!passwordIsDifficultEnough(req.body.password)) {
-        return res.render('register', {error: ''});
+        return res.render('register', {error: 'Password Too Weak'});
     }
 
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
@@ -156,6 +156,9 @@ const resetPasswordGet = (req, res) => {
 }
 
 const resetPasswordPost = (req, res) => {
+    if (!passwordIsDifficultEnough(req.body.password)) {
+        return res.render('resetPassword', {error: 'Password Too Weak'});
+    }
     // console.log(req);
     const {userId} = req.params;
     const {token} = req.params;
@@ -183,6 +186,7 @@ const resetPasswordPost = (req, res) => {
                             }
                             user.save();
                             tokenDb.remove();
+                            res.render('resetPassword', {error: 'Password changed'});
                         });
                     } else {
                         //delete the token
@@ -191,8 +195,9 @@ const resetPasswordPost = (req, res) => {
                     }
                 }
             }
+        } else {
+            res.render('resetPassword', {error: 'Link Invalid'});
         }
-        res.render('resetPassword', {error: 'Link Invalid'});
     });
 }
 
