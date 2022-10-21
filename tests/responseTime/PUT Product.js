@@ -53,4 +53,70 @@ async function putProduct(token, idsLocal, idsRemote) {
     console.log(`Remote Average: ${remoteAverage}ms`);
 }
 
-module.exports = putProduct;
+/**
+ * Load test the PUT Products endpoint with 500 and 1000 concurrent requests
+ */
+async function putProductLoad(token, productIds500, productIds1000) {
+    const data = {
+        "name": "Updated Test Product",
+        "price": 200,
+        "description": "This is an updated test product",
+        "imageUrl": "https://www.notgoogle.com"
+    }
+    const remoteUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
+
+
+    let responseTimes500 = [];
+    let responseTimes1000 = [];
+    let promises = [];
+
+
+    // 500 concurrent requests
+    for (let id of productIds500) {
+        let start = new Date().getTime();
+        promises.push(fetch(remoteUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        }).then(async () => {
+            let end = new Date().getTime();
+            responseTimes500.push(end - start);
+        }));
+    }
+    await Promise.all(promises);
+    promises = [];
+
+    // 1000 concurrent requests
+    for (let id of productIds1000) {
+        let start = new Date().getTime();
+        promises.push(fetch(remoteUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        }).then(async () => {
+            let end = new Date().getTime();
+            responseTimes1000.push(end - start);
+        }));
+    }
+    await Promise.all(promises);
+
+
+    // Average results
+    let total500 = responseTimes500.reduce((a, b) => a + b, 0);
+    let total1000 = responseTimes1000.reduce((a, b) => a + b, 0);
+
+    let average500 = total500 / responseTimes500.length;
+    let average1000 = total1000 / responseTimes1000.length;
+
+    console.log(`500 Concurrent Requests Average: ${average500}ms`);
+    console.log(`1000 Concurrent Requests Average: ${average1000}ms`);
+    return [productIds500, productIds1000];
+}
+
+module.exports = [putProduct, putProductLoad];

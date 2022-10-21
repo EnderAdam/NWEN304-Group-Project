@@ -66,7 +66,7 @@ async function postProduct(token) {
 }
 
 /**
- * Load test the GET Products endpoint with 500 and 1000 concurrent requests
+ * Load test the POST Products endpoint with 500 and 1000 concurrent requests
  */
 async function postProductLoad(token) {
     const data = {
