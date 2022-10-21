@@ -41,6 +41,6 @@ router.get('/forgotPassword', forgotPasswordGet);
 
 router.get('/resetPassword/:userId/:token', resetPasswordGet);
 
-router.post('/resetPassword/:userId/:token', resetPasswordPost);
+router.get('/resetPassword', resetPasswordPost);
 
 module.exports = router;

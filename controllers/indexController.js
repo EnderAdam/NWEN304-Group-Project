@@ -123,7 +123,7 @@ const forgotPasswordPost = (req, res) => {
             return res.render('forgotPassword', {error: err.message});
         }
         if (user) {
-            let token = await new Token ({
+            let token = await new Token({
                 userId: user._id,
                 token: uuidv4(),
             }).save();
@@ -152,8 +152,9 @@ const resetPasswordGet = (req, res) => {
 }
 
 const resetPasswordPost = (req, res) => {
-    const {userId} = req.params;
-    const {token} = req.params;
+    // console.log(req);
+    const {userId} = req.query;
+    const {token} = req.query;
 
     console.log(userId + " " + token);
     Account.findOne({_id: userId}, async function (err, user) {
@@ -178,7 +179,7 @@ const resetPasswordPost = (req, res) => {
                             }
                             user.save();
                             tokenDb.remove();
-                            // return res.render('login', {error: "Password changed"});
+                            return res.redirect('login');
                         });
                     } else {
                         //delete the token
