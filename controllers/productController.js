@@ -1,12 +1,16 @@
 const Product = require("../models/product");
-
+const fetch = require("node-fetch")
 /**
  * Render the index page for products
  * @param req - The request object
  * @param res - The response object
  */
-const index = (req, res) => {
+const index = async (req, res) => {
     let startTime = Date.now();
+    let response = await fetch("https://api.weatherstack.com/current?access_key="+process.env.WEATHERKEY+"&query=Wellington");
+    let json = await response.json();
+    console.log("WEATHER JSON: \n"+json.current);
+
     Product.find().then(products => {
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Database took ${Date.now() - startTime}ms`);
         res.render("products/index", {products: products});
