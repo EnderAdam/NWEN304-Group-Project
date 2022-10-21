@@ -6,6 +6,7 @@ const Product = require('./product');
 const User = new Schema({
     username: String,
     password: String,
+    googleId: String,
     purchases: [Product.schema],
     isAdmin: boolean = false,
     country: String,
