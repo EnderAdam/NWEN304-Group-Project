@@ -5,6 +5,7 @@ const {
     index,
     loginGet,
     logoutGet,
+    secret,
     registerGet,
     loginPost,
     registerPost,
