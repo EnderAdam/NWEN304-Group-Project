@@ -83,7 +83,7 @@ const registerPost = (req, res) => {
         return res.render('register', {error: 'Password Too Weak'});
     }
 
-    Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
+    Account.register(new Account({username: req.body.username, country: req.body.country, region: req.body.region}), req.body.password, function (err, account) {
         if (err) {
             console.log(err);
             return res.render('register', {account: account, error: err.message});

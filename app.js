@@ -50,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     res.locals.auth = !!req.isAuthenticated();
     res.locals.admin = req.isAuthenticated() && req.user.isAdmin;
+    res.locals.user = req.isAuthenticated() ? req.user : null;
     next();
 });
 

@@ -8,23 +8,40 @@
     <%- include('../partials/header'); %>
 </header>
 <body>
-<h1>This is the new product page!</h1>
-<p>Use this to create a new product</p>
-<form action="/products/create" method="post">
-    <label for="name">Name:</label><br>
-    <input type="text" id="name" name="name" ><br><br>
+    <h1>This is the new product page!</h1>
+    <p>Use this to create a new product</p>
 
-    <label for="price">Price:</label><br>
-    <input type="text" id="price" name="price" ><br><br>
+    <script>
+            const checkNumber = function (){
+            const priceAlertText = document.getElementById("priceAlert")
+            const price = document.forms[0].price.value
 
-    <label for="description">Description:</label><br>
-    <input type="text" id="description" name="description"><br><br>
+            if(isNaN(price)){
+                priceAlertText.textContent = "Price must be a number!"
+            }
+            else {
+                priceAlertText.textContent = ""
+            }
+        }
+    </script>
 
-    <label for="imageUrl">ImageUrl:</label><br>
-    <input type="text" id="imageUrl" name="imageUrl"><br><br>
+    <form action="/products/create" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" ><br><br>
 
-    <input type="submit" value="Submit">
-</form>
+        <label for="price">Price:</label><br>
+        <input type="text" id="price" name="price" oninput="checkNumber()" >
+        <p id = "priceAlert" style="color: red"></p>
+
+        <label for="description">Description:</label><br>
+        <input type="text" id="description" name="description"><br><br>
+
+        <label for="imageUrl">ImageUrl:</label><br>
+        <input type="text" id="imageUrl" name="imageUrl"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
 </body>
 <footer>
     <%- include('../partials/footer'); %>

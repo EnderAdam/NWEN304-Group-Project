@@ -1,15 +1,24 @@
 const Product = require("../models/product");
-
+const fetch = require("node-fetch")
 /**
  * Render the index page for products
  * @param req - The request object
  * @param res - The response object
  */
-const index = (req, res) => {
+const index = async (req, res) => {
     let startTime = Date.now();
+
+    let location = "Wellington"
+    if(res.locals.auth && res.locals.user.region && res.locals.user.country){
+        location = res.locals.user.region + ", " + res.locals.user.country
+    }
+    let response = await fetch("http://api.weatherstack.com/current?access_key="+process.env.WEATHERKEY+"&query="+location);
+    let json = await response.json();
+
+
     Product.find().then(products => {
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Database took ${Date.now() - startTime}ms`);
-        res.render("products/index", {products: products});
+        res.render("products/index", {products: products, temperature: json.current.temperature});
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Render took ${Date.now() - startTime}ms`);
     }).catch(() => {
         res.status(404).render('404');
@@ -67,6 +76,7 @@ const show = (req, res) => {
     const {id} = req.params;
     let startTime = Date.now();
     Product.findById(id).then(product => {
+        if (product === null) return res.status(404).render('404');
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Database took ${Date.now() - startTime}ms`);
         res.render("products/show", {product: product});
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Render took ${Date.now() - startTime}ms`);
@@ -145,7 +155,7 @@ const purchase = (req, res) => {
     let startTime = Date.now();
     Product.findById(id).then(product => {
         if (!product) {
-            res.status(404).redirect("/products");
+            return res.status(404).redirect("/products");
         }
         // Get the user
         const user = req.user;

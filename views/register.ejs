@@ -3,6 +3,9 @@
 <head>
     <title>Register-The Connoisseurs</title>
     <%- include('partials/head'); %>
+    <link rel="gettext" type="application/x-po" href="js/en.po" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-dropdown-menu/2.3.1/js/geodatasource-cr.min.js"></script>
+    <script type="text/javascript" src="js/Gettext.js"></script>
 </head>
 <header>
     <%- include('partials/header'); %>
@@ -22,6 +25,16 @@
             <div class="mb-2">
                 <label for="password" class="form-label">Password&nbsp</label>
                 <input type="password" class="form-control" name="password" placeholder="Password" required oninput="passwordDifficulty()">
+            </div>
+            <br>
+            <div class="mb-2">
+                <label for="country" class="form-label">Country</label>
+                <select name="country" class="gds-cr" country-data-region-id="gds-cr-one" data-language="en" required></select>
+            </div>
+            <br>
+            <div class="mb-2">
+                <label for="region" class="form-label">Region</label>
+                <select name="region" id="gds-cr-one" required></select>
             </div>
             <br>
             <button type="submit" class="btn btn-primary mt-2">Submit</button>

@@ -1,6 +1,7 @@
+<% if (product) {%>
 <div class = "displayProduct">
-    <p> name: <%= product.name %>, &nbsp&nbsp&nbsp&nbsp price: <%= product.price %></p>
-    <p>description: <%= product.description %></p>
+    <h2> <%= product.name %> &nbsp&nbsp&nbsp&nbsp $<%= product.price %></h2>
+    <p><%= product.description %></p>
 <!--    <p><a href="\products\<%= product._id %>"> _id: <%= product._id %></a> &nbsp&nbsp&nbsp&nbsp imageUrl: <%= product.imageUrl %> </p>-->
     <a href="\products\<%= product._id %>"><img src="<%=product.imageUrl%>"></a>
 <!--    <p><a href="\products\<%= product._id %>\edit"> edit product</a></p>-->
@@ -9,3 +10,4 @@
         <li class="btn"><a type="button" href="\products\<%= product._id%>\purchase">Buy</a></li>
     </ul>
 </div>
+<% } %>
