@@ -15,23 +15,23 @@ const productRouter = require('./routes/productRouter');
 const accountRouter = require('./routes/accountRouter');
 const Account = require('./models/account');
 
-// Set up mongoose connection
-
+// Set up mongoose connection to be either test or production
 const mongoDB = process.env.NODE_ENV === 'test' ? "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/test?retryWrites=true&w=majority" : "mongodb+srv://dbUser:c43&B6HD6^oT2L^@nwen304project.utzxtry.mongodb.net/database?retryWrites=true&w=majority";
-
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
-
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 
+// Initialise the Express app
 const app = express();
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Set up session store to use MongoDB to store sessions in the database
 app.use(session({
     saveUninitialized: true,
     resave: true,
@@ -43,21 +43,9 @@ app.use(session({
     })
 }));
 
+//Set up passport to support sessions, Username and Passwords and Google OAuth all within the database
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use((req, res, next) => {
-    res.locals.auth = !!req.isAuthenticated();
-    res.locals.admin = req.isAuthenticated() && req.user.isAdmin;
-    res.locals.user = req.isAuthenticated() ? req.user : null;
-    next();
-});
-
-app.use('/', indexRouter);
-app.use('/api', apiRouter);
-app.use('/products', productRouter);
-app.use('/account', accountRouter);
 
 passport.use(Account.createStrategy());
 passport.use(new GoogleStrategy({
@@ -89,6 +77,21 @@ passport.use(new GoogleStrategy({
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
+// Create some variables to be used in the views
+app.use((req, res, next) => {
+    res.locals.auth = !!req.isAuthenticated();
+    res.locals.admin = req.isAuthenticated() && req.user.isAdmin;
+    res.locals.user = req.isAuthenticated() ? req.user : null;
+    next();
+});
+
+// Set up the routes
+app.use('/', indexRouter);
+app.use('/api', apiRouter);
+app.use('/products', productRouter);
+app.use('/account', accountRouter);
+
+// Catch 404 and forward to error handler
 app.use(function (req, res) {
     res.status(404);
 
@@ -107,6 +110,7 @@ app.use(function (req, res) {
 });
 
 
+// Start the server and listen on the port specified in the environment variables
 server = http.createServer(app);
 server.listen(process.env.PORT || 3000)
 
