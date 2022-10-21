@@ -1,5 +1,5 @@
 async function deleteProduct(token, ids) {
-    const localUrl = `http://localhost:3000/api/products/`;
+    const localUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
     let responseTimes = [];
 
     // Create 10 products and measure the time it takes to create each one

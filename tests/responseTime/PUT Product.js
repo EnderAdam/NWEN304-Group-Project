@@ -5,7 +5,7 @@ async function putProduct(token, ids) {
         "description": "This is an updated test product",
         "imageUrl": "https://www.notgoogle.com"
     }
-    const localUrl = `http://localhost:3000/api/products/`;
+    const localUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
     let responseTimes = [];
 
     // Create 10 products and measure the time it takes to create each one

@@ -1,5 +1,5 @@
 async function POSTLogin() {
-    const localUrl = `http://localhost:3000/api/login`;
+    const localUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/login`;
 
     let local = await fetch(localUrl, {
         method: 'POST', headers: {

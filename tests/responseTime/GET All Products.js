@@ -1,6 +1,5 @@
-async function getProducts() {
-    const id = "632e9adc45ac4aaec91deb8e";
-    const localUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/${id}`;
+async function getAllProducts() {
+    const localUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
 
     let responseTimesLocal = [];
 
@@ -21,4 +20,4 @@ async function getProducts() {
     console.log(`Average: ${localAverage}ms`);
 }
 
-module.exports = getProducts;
+module.exports = getAllProducts;
