@@ -157,8 +157,8 @@ const resetPasswordGet = (req, res) => {
 
 const resetPasswordPost = (req, res) => {
     // console.log(req);
-    const {userId} = req.query;
-    const {token} = req.query;
+    const {userId} = req.params;
+    const {token} = req.params;
 
     console.log(userId + " " + token);
     Account.findOne({_id: userId}, async function (err, user) {
@@ -183,7 +183,6 @@ const resetPasswordPost = (req, res) => {
                             }
                             user.save();
                             tokenDb.remove();
-                            return res.redirect('login');
                         });
                     } else {
                         //delete the token
