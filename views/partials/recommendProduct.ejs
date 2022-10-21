@@ -10,13 +10,18 @@
     <% } %>
     <header>Your recommended products are:</header> <br>
     <% for(product of products){ %>
-        <% if (clothingName == product.name) { %>
+        <% if (clothingName === product.name) { %>
             <%- include('../partials/displayProduct', {product: product}); %>
             <%break%>
         <% } %>
     <% } %>
     <% if (locals.auth && locals.user.purchases.length>0) { %>
-        <%var product =locals.user.purchases[Math.floor(Math.random()*locals.user.purchases.length)] %>
-        <%- include('../partials/displayProduct', {product: product}); %>
+        <%for (i= 0; i <100; i++){%>
+            <%var product =locals.user.purchases[Math.floor(Math.random()*locals.user.purchases.length)] %>
+            <% if (products.some(e=> e && product && e.name === product.name )){%>
+                <%- include('../partials/displayProduct', {product: product}); %>
+                <%break%>
+            <%}%>
+        <%}%>
     <% } %>
 </div>
