@@ -1,5 +1,9 @@
 // Test API Response times for each of the five endpoints on the remote server and compare the results to the local server.
 
+// Start up the server with the test database and run the tests
+process.env.NODE_ENV = 'test';
+const server = require('../../app.js');
+
 // Require all the individual Test files
 const login = require('./POST Login.js');
 const getAllProducts = require('./GET All Products.js');
@@ -26,11 +30,15 @@ async function runTests() {
 
     // PUT /products/:id
     console.log("PUT api/products/:id");
-    await putProduct(token, ids);
+    await putProduct(token, ids[0], ids[1]);
 
     // DELETE /products/:id
     console.log("DELETE api/products/:id");
-    await deleteProduct(token, ids);
+    await deleteProduct(token, ids[0], ids[1]);
+
+    // Close the server and exit the process
+    server.close();
+    process.exit();
 }
 
 // Node.JS weirdness required to run an async function from the top level
