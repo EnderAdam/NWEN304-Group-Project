@@ -1,5 +1,20 @@
 <div class = "recommendProduct">
-    <header>Your recommended products are:</header>
+
+    <p>the temprature is <%=temperature%> degrees</p>
+    <%var clothingName = "Tshirt"%>
+    <% if (temperature <=15) { %>
+        <%clothingName = "Coat" %>
+        <p>We recommend a coat for this cold day!</p>
+    <% } else {%>
+        <p>We recommend a Tshirt for this warm day!</p>
+    <% } %>
+    <header>Your recommended products are:</header> <br>
+    <% for(product of products){ %>
+        <% if (clothingName == product.name) { %>
+            <%- include('../partials/displayProduct', {product: product}); %>
+            <%break%>
+        <% } %>
+    <% } %>
     <% if (locals.auth && locals.user.purchases.length>0) { %>
         <%var product =locals.user.purchases[Math.floor(Math.random()*locals.user.purchases.length)] %>
         <%- include('../partials/displayProduct', {product: product}); %>

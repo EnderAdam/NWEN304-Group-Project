@@ -7,13 +7,13 @@ const fetch = require("node-fetch")
  */
 const index = async (req, res) => {
     let startTime = Date.now();
-    let response = await fetch("https://api.weatherstack.com/current?access_key="+process.env.WEATHERKEY+"&query=Wellington");
+    let response = await fetch("http://api.weatherstack.com/current?access_key="+process.env.WEATHERKEY+"&query=Wellington");
     let json = await response.json();
-    console.log("WEATHER JSON: \n"+json.current);
+    console.log(json.current);
 
     Product.find().then(products => {
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Database took ${Date.now() - startTime}ms`);
-        res.render("products/index", {products: products});
+        res.render("products/index", {products: products, temperature: json.current.temperature});
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Index Render took ${Date.now() - startTime}ms`);
     }).catch(() => {
         res.status(404).render('404');
