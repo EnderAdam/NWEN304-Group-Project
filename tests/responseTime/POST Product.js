@@ -65,4 +65,79 @@ async function postProduct(token) {
     return [productIdsLocal, productIdsRemote];
 }
 
-module.exports = postProduct;
+/**
+ * Load test the GET Products endpoint with 500 and 1000 concurrent requests
+ */
+async function postProductLoad(token) {
+    const data = {
+        "name": "Test Product",
+        "price": 100,
+        "description": "This is a test product",
+        "imageUrl": "https://www.google.com"
+    }
+    const remoteUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/create`;
+
+    let productIds500 = [];
+    let productIds1000 = [];
+
+    let responseTimes500 = [];
+    let responseTimes1000 = [];
+    let promises = [];
+
+
+    // 500 concurrent requests
+    for (let i = 0; i < 500; i++) {
+        let start = new Date().getTime();
+        promises.push(fetch(remoteUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        }).then(async response => {
+            let end = new Date().getTime();
+            responseTimes500.push(end - start);
+            let json = await response.json();
+            productIds500.push(json.product._id);
+        }));
+    }
+    await Promise.all(promises);
+    promises = [];
+
+    // 500 concurrent requests
+    for (let i = 0; i < 1000; i++) {
+        let start = new Date().getTime();
+        promises.push(fetch(remoteUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        }).then(async response => {
+            let end = new Date().getTime();
+            responseTimes1000.push(end - start);
+            let json = await response.json();
+            productIds1000.push(json.product._id);
+        }));
+    }
+    await Promise.all(promises);
+
+
+    // Average results
+    let total500;
+    let total1000;
+
+    total500 = responseTimes500.reduce((a, b) => a + b, 0);
+    total1000 = responseTimes1000.reduce((a, b) => a + b, 0);
+
+    let average500 = total500 / responseTimes500.length;
+    let average1000 = total1000 / responseTimes1000.length;
+
+    console.log(`500 Concurrent Requests Average: ${average500}ms`);
+    console.log(`1000 Concurrent Requests Average: ${average1000}ms`);
+    return [productIds500, productIds1000];
+}
+
+module.exports = [postProduct, postProductLoad];
