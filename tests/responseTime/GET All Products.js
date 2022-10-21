@@ -1,32 +1,22 @@
-async function deleteProduct(token, idsLocal, idsRemote) {
+async function getAllProducts() {
     const remoteUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
     const localUrl = `http://localhost:3000/api/products/`;
-    let responseTimesRemote = [];
+
     let responseTimesLocal = [];
+    let responseTimesRemote = [];
 
-    // Delete 10 products and measure the time it takes to delete each one
-    for (let id of idsRemote) {
+    for (let i = 0; i < 10; i++) {
         let start = new Date().getTime();
-        await fetch(remoteUrl + id, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        let end = new Date().getTime();
-        responseTimesRemote.push(end - start);
-    }
-
-    for (let id of idsLocal) {
-        let start = new Date().getTime();
-        await fetch(localUrl + id, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        await fetch(localUrl);
         let end = new Date().getTime();
         responseTimesLocal.push(end - start);
+    }
+
+    for (let i = 0; i < 10; i++) {
+        let start = new Date().getTime();
+        await fetch(remoteUrl);
+        let end = new Date().getTime();
+        responseTimesRemote.push(end - start);
     }
 
     // Average results
@@ -44,9 +34,9 @@ async function deleteProduct(token, idsLocal, idsRemote) {
 }
 
 /**
- * Load test the GET Products endpoint with 500 and 1000 concurrent requests
+ * Load test the GET All Products endpoint with 500 and 1000 concurrent requests
  */
-async function deleteProductLoad(token, productIds500, productIds1000) {
+async function getAllProductsLoad() {
     const remoteUrl = `https://nwen304theconnoisseurs.herokuapp.com/api/products/`;
 
     let responseTimes500 = [];
@@ -55,14 +45,9 @@ async function deleteProductLoad(token, productIds500, productIds1000) {
 
 
     // 500 concurrent requests
-    for (let id of productIds500) {
+    for (let i = 0; i < 500; i++) {
         let start = new Date().getTime();
-        promises.push(fetch(remoteUrl + id, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async () => {
+        promises.push(fetch(remoteUrl).then(() => {
             let end = new Date().getTime();
             responseTimes500.push(end - start);
         }));
@@ -71,14 +56,9 @@ async function deleteProductLoad(token, productIds500, productIds1000) {
     promises = [];
 
     // 1000 concurrent requests
-    for (let id of productIds1000) {
+    for (let i = 0; i < 1000; i++) {
         let start = new Date().getTime();
-        promises.push(fetch(remoteUrl + id, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        }).then(async () => {
+        promises.push(fetch(remoteUrl).then(() => {
             let end = new Date().getTime();
             responseTimes1000.push(end - start);
         }));
@@ -100,4 +80,4 @@ async function deleteProductLoad(token, productIds500, productIds1000) {
     console.log(`1000 Concurrent Requests Average: ${average1000}ms`);
 }
 
-module.exports = [deleteProduct, deleteProductLoad];
+module.exports = [getAllProducts, getAllProductsLoad];

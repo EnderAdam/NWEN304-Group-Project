@@ -91,8 +91,7 @@ passport.deserializeUser(Account.deserializeUser());
 app.use(function (req, res) {
     res.status(404);
 
-    // respond with json
-    if (req.accepts('json')) {
+    if (req.url.startsWith('/api')) {
         res.json({error: 'Not found'});
         return;
     }

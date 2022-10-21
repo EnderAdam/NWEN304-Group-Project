@@ -110,7 +110,7 @@ const checkNotAuthenticated = (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
-    if (req.user.isAdmin) {
+    if (req.user && req.user.isAdmin) {
         return next();
     }
     res.redirect('/login');
