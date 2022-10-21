@@ -1,5 +1,11 @@
 const passport = require("passport");
 const Account = require("../models/account");
+const sendEmail = require("./sendEmail");
+const Token = require('../models/token');
+
+const {
+    v4: uuidv4,
+} = require('uuid');
 
 const index = (req, res) => {
     res.render('index', {title: 'Express'});
@@ -74,7 +80,7 @@ const passwordIsDifficultEnough = (password) => {
 const registerPost = (req, res) => {
     //check if the password is strong enough
     if (!passwordIsDifficultEnough(req.body.password)) {
-        return res.render('register', {error: ''});
+        return res.render('register', {error: 'Password Too Weak'});
     }
 
     Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
@@ -110,6 +116,87 @@ const isAdmin = (req, res, next) => {
     res.redirect('/login');
 }
 
+const forgotPasswordPost = (req, res) => {
+    Account.findOne({username: req.body.username}, async function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.render('forgotPassword', {error: err.message});
+        }
+        if (user) {
+            let token = await new Token({
+                userId: user._id,
+                token: uuidv4(),
+            }).save();
+            //send email
+            try {
+                await sendEmail(user.username, "Password reset",
+                    "Click on the link to reset your password: " + process.env.BASE_URL + "/resetPassword/" + token.userId + "/" + token.token);
+                return res.render('login', {error: "Email sent"});
+            } catch (e) {
+                console.log(e);
+                return res.render('forgotPassword', {error: e.message});
+            }
+        }
+        res.render('forgotPassword', {error: 'No user with that email address exists'});
+    });
+}
+
+const forgotPasswordGet = (req, res) => {
+    res.render('forgotPassword', {error: ''});
+}
+
+const resetPasswordGet = (req, res) => {
+    const {userId} = req.params;
+    const {token} = req.params;
+    res.render('resetPassword', {userId: userId, token: token, error: ''});
+}
+
+const resetPasswordPost = (req, res) => {
+    if (!passwordIsDifficultEnough(req.body.password)) {
+        return res.render('resetPassword', {error: 'Password Too Weak'});
+    }
+    // console.log(req);
+    const {userId} = req.params;
+    const {token} = req.params;
+
+    console.log(userId + " " + token);
+    Account.findOne({_id: userId}, async function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.render('resetPassword', {error: err.message});
+        }
+        if (user) {
+            console.log("User found");
+            let tokenDbArr = await Token.find({userId: user._id}); //find all tokens for the user
+            for (let tokenDb of tokenDbArr) { //for each token found
+                console.log(tokenDb.token);
+                if (tokenDb.token === token) { //if the token is the same as the one in the url
+                    //check the expiration date
+                    if (tokenDb.createdAt.getTime() + tokenDb.expires > Date.now()) { //if the token is not expired
+                        console.log("Token not expired");
+                        //update the password and delete the token
+                        user.setPassword(req.body.password, function (err) {
+                            if (err) {
+                                console.log(err);
+                                return res.render('resetPassword', {error: err.message});
+                            }
+                            user.save();
+                            tokenDb.remove();
+                            res.render('resetPassword', {error: 'Password changed'});
+                        });
+                    } else {
+                        //delete the token
+                        tokenDb.remove();
+                        console.log("Token expired");
+                    }
+                }
+            }
+        } else {
+            res.render('resetPassword', {error: 'Link Invalid'});
+        }
+    });
+}
+
 module.exports = {
     index,
     loginGet,
@@ -121,5 +208,9 @@ module.exports = {
     checkNotAuthenticated,
     googlePage,
     googleCallback,
-    isAdmin
+    isAdmin,
+    forgotPasswordPost,
+    forgotPasswordGet,
+    resetPasswordGet,
+    resetPasswordPost
 }
