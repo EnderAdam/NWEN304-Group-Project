@@ -76,6 +76,7 @@ const show = (req, res) => {
     const {id} = req.params;
     let startTime = Date.now();
     Product.findById(id).then(product => {
+        if (product === null) return res.status(404).render('404');
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Database took ${Date.now() - startTime}ms`);
         res.render("products/show", {product: product});
         if (process.env.DEBUG) console.debug(`[DEBUG] Product Show Render took ${Date.now() - startTime}ms`);

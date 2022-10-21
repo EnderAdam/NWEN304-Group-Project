@@ -1,3 +1,4 @@
+<% if (product) {%>
 <div class = "displayProduct">
     <h2> <%= product.name %> &nbsp&nbsp&nbsp&nbsp $<%= product.price %></h2>
     <p><%= product.description %></p>
@@ -9,3 +10,4 @@
         <li class="btn"><a type="button" href="\products\<%= product._id%>\purchase">Buy</a></li>
     </ul>
 </div>
+<% } %>
