@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-const {callbackPromise} = require("nodemailer/lib/shared");
 
 const sendEmail = async (email, subject, text) => {
     console.log("Sending email to " + email);
@@ -23,8 +22,8 @@ const sendEmail = async (email, subject, text) => {
 
         console.log("email sent successfully");
     } catch (error) {
-        console.log(error);
         console.log(error, "email not sent");
+        throw error;
     }
 };
 
