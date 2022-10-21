@@ -128,9 +128,14 @@ const forgotPasswordPost = (req, res) => {
                 token: uuidv4(),
             }).save();
             //send email
-            console.log("Sending email" + token);
-            await sendEmail(user.username, "Password reset",
-                "Click on the link to reset your password: http://localhost:3000/resetPassword/" + token.userId + "/" + token.token);
+            try {
+                await sendEmail(user.username, "Password reset",
+                    "Click on the link to reset your password: " + process.env.BASE_URL + "/resetPassword/" + token.userId + "/" + token.token);
+                return res.render('login', {error: "Email sent"});
+            } catch (e) {
+                console.log(e);
+                return res.render('forgotPassword', {error: e.message});
+            }
         }
         res.render('forgotPassword', {error: 'No user with that email address exists'});
     });
@@ -141,11 +146,12 @@ const forgotPasswordGet = (req, res) => {
 }
 
 const resetPasswordGet = (req, res) => {
-    res.render('resetPassword', {error: ''});
+    const {userId} = req.params;
+    const {token} = req.params;
+    res.render('resetPassword', {userId: userId, token: token, error: ''});
 }
 
 const resetPasswordPost = (req, res) => {
-    console.log(req);
     const {userId} = req.params;
     const {token} = req.params;
 
@@ -157,19 +163,32 @@ const resetPasswordPost = (req, res) => {
         }
         if (user) {
             console.log("User found");
-            let token = await Token.findOne({userId: user._id});
-            if (token.token === token) {
-                user.setPassword(req.body.password, function (err) {
-                    if (err) {
-                        console.log(err);
-                        return res.render('resetPassword', {error: err.message});
+            let tokenDbArr = await Token.find({userId: user._id}); //find all tokens for the user
+            for (let tokenDb of tokenDbArr) { //for each token found
+                console.log(tokenDb.token);
+                if (tokenDb.token === token) { //if the token is the same as the one in the url
+                    //check the expiration date
+                    if (tokenDb.createdAt.getTime() + tokenDb.expires > Date.now()) { //if the token is not expired
+                        console.log("Token not expired");
+                        //update the password and delete the token
+                        user.setPassword(req.body.password, function (err) {
+                            if (err) {
+                                console.log(err);
+                                return res.render('resetPassword', {error: err.message});
+                            }
+                            user.save();
+                            tokenDb.remove();
+                            // return res.render('login', {error: "Password changed"});
+                        });
+                    } else {
+                        //delete the token
+                        tokenDb.remove();
+                        console.log("Token expired");
                     }
-                    user.save();
-                    res.redirect('/login');
-                });
+                }
             }
         }
-        res.render('resetPassword', {error: 'No user with that email address exists'});
+        res.render('resetPassword', {error: 'Link Invalid'});
     });
 }
 
