@@ -5,23 +5,19 @@ const {
     index,
     loginGet,
     logoutGet,
-    secret,
     registerGet,
     loginPost,
     registerPost,
     checkNotAuthenticated,
-    isAdmin,
     forgotPasswordPost,
     forgotPasswordGet,
     googlePage,
-    googleCallback
+    googleCallback, resetPasswordGet, resetPasswordPost
 } = require('../controllers/indexController');
 // GET Routes
 router.get('/', index);
 
 router.get('/login', checkNotAuthenticated, loginGet);
-
-router.get('/secret', isAdmin, secret);
 
 router.get('/logout', logoutGet);
 
