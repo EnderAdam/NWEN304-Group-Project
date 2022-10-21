@@ -155,7 +155,7 @@ const purchase = (req, res) => {
     let startTime = Date.now();
     Product.findById(id).then(product => {
         if (!product) {
-            res.status(404).redirect("/products");
+            return res.status(404).redirect("/products");
         }
         // Get the user
         const user = req.user;
