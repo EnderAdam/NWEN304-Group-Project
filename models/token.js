@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const tokenSchema = new Schema({
+const tokenSchema = new Schema({ // Create a new schema for the token
     userId: {
         type: String,
         required: true,
