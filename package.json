@@ -7,7 +7,8 @@
     "start": "node app.js",
     "debug": "set DEBUG=express:* & node app.js",
     "dev": "nodemon app.js",
-    "response": "node tests/responseTime/allResponseTests.js"
+    "response": "node tests/responseTime/allResponseTests.js",
+    "authentication": "mocha tests/authorizationTest/authentication.test.js"
   },
   "keywords": [],
   "author": "",
