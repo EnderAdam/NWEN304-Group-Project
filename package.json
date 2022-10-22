@@ -7,7 +7,8 @@
     "start": "node app.js",
     "debug": "set DEBUG=express:* & node app.js",
     "dev": "nodemon app.js",
-    "response": "node tests/responseTime/allResponseTests.js"
+    "response": "node tests/responseTime/allResponseTests.js",
+    "authentication": "mocha tests/authorizationTest/authentication.test.js"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +30,11 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.1.2",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.1.0",
+    "sinon": "^14.0.1",
+    "supertest": "^6.3.0"
   }
 }
