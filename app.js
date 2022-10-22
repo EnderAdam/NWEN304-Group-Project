@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {maxAge: 86400000}));
 
 // Set up session store to use MongoDB to store sessions in the database
 app.use(session({
@@ -42,6 +42,12 @@ app.use(session({
         collection: 'sessions'
     })
 }));
+
+// Set up cache control to cache images for 1 day and other files for 1 day requiring verification
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-cache, max-age=86400');
+    next();
+});
 
 //Set up passport to support sessions, Username and Passwords and Google OAuth all within the database
 app.use(passport.initialize());
