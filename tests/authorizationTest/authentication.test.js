@@ -8,7 +8,7 @@ const should = require("chai").should();
  * @returns {Promise<void>} - Nothing
  */
 async function runTests() {
-    const newUser = {"username": "-8test-new@techbrij.com", "password": "tesT!"};
+    const newUser = {"username": "-11test-new@techbrij.com", "password": "tesT!"};
     const existingUser = {"username": "1test-new@techbrij.com", "password": "tesT!"};
     let createdProduct = null;
 
