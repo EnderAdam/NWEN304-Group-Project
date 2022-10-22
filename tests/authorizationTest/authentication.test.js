@@ -4,9 +4,14 @@ const request = require("supertest");
 const chai = require("chai");
 const should = require("chai").should();
 
+/**
+ * Tests for authentication middlewares
+ * @returns {Promise<void>} - Nothing
+ */
 async function runTests() {
-    const newUser = {"username": "-5test-new@techbrij.com", "password": "tesT!"};
+    const newUser = {"username": "-8test-new@techbrij.com", "password": "tesT!"};
     const existingUser = {"username": "1test-new@techbrij.com", "password": "tesT!"};
+    let createdProduct = null;
 
     after(async () => {
         // Close the server and exit the process
@@ -28,6 +33,25 @@ async function runTests() {
                     return;
                 }
                 done("response text should include 'Password or username is incorrect'");
+            })
+    });
+
+    it("Try creating a user with a weak password", (done) => {
+        const weakPasswordUser = {"username": newUser.username, "password": "weak"};
+        request(app)
+            .post('/register')
+            .send(weakPasswordUser)
+            .expect(200)
+            .end((err, res) => {
+                if (res.text.includes("Password Too Weak")) {
+                    if (!err) {
+                        done();
+                        return;
+                    }
+                    done("shouldn't have an error");
+                    return;
+                }
+                done("response text should include 'Password Too Weak'");
             })
     });
 
@@ -64,7 +88,6 @@ async function runTests() {
     });
 
 
-
     it("should not login with wrong password", (done) => {
         const wrongPasswordUser = {"username": "1test-new@techbrij.com", "password": "tesT!!"};
         request(app)
@@ -83,48 +106,102 @@ async function runTests() {
                 done("response text should include 'Password or username is incorrect'");
             })
     });
-}
 
-// describe("# Auth APIs", () => {
-//     const apiBase = process.env.API_BASE || '/api';
-//     const newUser = {"username": "test-new@techbrij.com", "password": "tesT!"};
-//     it("should create user", () => {
-//         console.log("should create user");
-//         return request.post('/login')
-//             .send(newUser)
-//             .expect(200)
-//             .then(res => {
-//                 res.body.success.should.be.true;
-//             });
-//     });
-//
-//     it("should retrieve the token", () => {
-//         return cleanExceptDefaultUser().then(res => {
-//             return loginWithDefaultUser().then(res => {
-//                 res.status.should.equal(200);
-//                 res.body.success.should.be.true;
-//                 res.body.token.should.not.be.empty;
-//             });
-//         });
-//     });
-//
-//     it("should not login with the right user but wrong password", () => {
-//         return request.post(apiBase + '/auth/signin')
-//             .send({"username": newUser.username, "password": "random"})
-//             .expect(401);
-//     });
-//
-//     it("should return invalid credentials error", () => {
-//         return request.post(apiBase + '/auth/signin')
-//             .send({"username": newUser.username, "password": ""})
-//             .expect(401)
-//             .then(res => {
-//                 return request.post(apiBase + '/auth/signin')
-//                     .send({"username": newUser.username, "password": "mypass"})
-//                     .expect(401);
-//             });
-//     });
-// });
+    it("Test Api Login", (done) => {
+        request(app)
+            .post('/api/login')
+            .send(existingUser)
+            .expect(200)
+            .end((err, res) => {
+                //check if the response is a JSON object
+                res.body.should.be.a('object');
+                //check if the response has a token property
+                res.body.should.have.property('token');
+                //check if the token is a string
+                res.body.token.should.be.a('string');
+                if (!err) {
+                    done();
+                    return;
+                }
+                done("Should not have an error");
+            })
+    });
+
+    it("Test Api Login with wrong password", (done) => {
+        const wrongPasswordUser = {"username": existingUser.username, "password": "tesT!!"};
+        request(app)
+            .post('/api/login')
+            .send(wrongPasswordUser)
+            .expect(200)
+            .end((err, res) => {
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
+                res.body.message.should.eq('Login failed');
+                err.toString().should.contain('got 401 "Unauthorized"');
+                done();
+            })
+    });
+
+    it("Test creating a product without being logged in", (done) => {
+        const product = {"name": "test", "price": 10, "description": "test", "image": "test"};
+        request(app)
+            .post('/api/products/create')
+            .send(product)
+            .expect(200)
+            .end((err, res) => {
+                err.toString().should.contain('got 401 "Unauthorized"');
+                done();
+            })
+    });
+
+    it("Test creating a product while being logged in", (done) => {
+        const product = {"name": "test", "price": 10, "description": "test", "imageUrl": "test"};
+        const admin = {"username": "admin", "password": "admin"};
+        let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYzMzRlNDVmZjMyMGQzYTJmN2U0Y2RjNSJ9LCJpYXQiOjE2NjU4MTY0NDV9.VGMkS63Yva_Z7RyQ9azb2X0mV6Rr2BKHVcyoOst07XA";
+        request(app)
+            .post('/api/products/create')
+            .set('Authorization', "Bearer " + token)
+            .send(product)
+            .expect(201)
+            .end((err, res) => {
+                console.log(res.body);
+                createdProduct = res.body.product._id;
+                console.log(err);
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
+                res.body.message.should.eq('Product created successfully');
+                if (!err) {
+                    done();
+                    return;
+                }
+                done("Should not have an error");
+            })
+    });
+
+    it("Test deleting a product while being logged in", (done) => {
+        const product = {"name": "test", "price": 10, "description": "test", "imageUrl": "test"};
+        const admin = {"username": "admin", "password": "admin"};
+        let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYzMzRlNDVmZjMyMGQzYTJmN2U0Y2RjNSJ9LCJpYXQiOjE2NjU4MTY0NDV9.VGMkS63Yva_Z7RyQ9azb2X0mV6Rr2BKHVcyoOst07XA";
+        createdProduct = "63536259745dec208165dcba";
+        request(app)
+            .del('/api/products/' + createdProduct)
+            .set('Authorization', "Bearer " + token)
+            .send(product)
+            .expect(200)
+            .end((err, res) => {
+                res.body.should.be.a('object');
+                res.body.should.have.property('message');
+                res.body.message.should.eq('Product deleted successfully');
+                if (!err) {
+                    done();
+                    return;
+                }
+                done("Should not have an error");
+            })
+    });
+
+
+}
 
 // Node.JS weirdness required to run an async function from the top level
 (async () => {
