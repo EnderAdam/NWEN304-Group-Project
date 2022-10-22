@@ -17,7 +17,7 @@ To use the REST API, you can use the following endpoints:
 - PUT /products/:id - updates a product
 - DELETE /products/:id - deletes a product
 
-b. What the interface is (both for the web application and with REST API) 
+b. What the interface is (both for the web application and with REST API)  
 The interface for the REST API is a JSON object, and the interface for the web application is a webpage.  
 The REST API is accessible through a browser or any other HTTP client, and the web application is accessible only through a browser.
 
