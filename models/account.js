@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require('passport-local-mongoose');
 const Product = require('./product');
 
-const User = new Schema({
+const User = new Schema({ // Create a new schema for the user
     username: String,
     password: String,
     googleId: String,
@@ -15,6 +15,5 @@ const User = new Schema({
 
 // Setting up the passport plugin
 User.plugin(passportLocalMongoose);
-//User.plugin(passportLocalMongoose, { usernameField : 'email' });
 
 module.exports = mongoose.model('User', User);

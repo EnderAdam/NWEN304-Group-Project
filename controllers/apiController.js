@@ -153,7 +153,7 @@ const login = (req, res, next) => {
                 });
             }
             const body = {_id: user._id, email: user.email};
-            const token = jwt.sign({user: body}, 'secret'); //TODO Change
+            const token = jwt.sign({user: body}, 'secret');
 
             return res.json({token});
         });
