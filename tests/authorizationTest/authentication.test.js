@@ -1,4 +1,3 @@
-const User = require("../../models/account");
 const app = require("../../app");
 const request = require("supertest");
 const chai = require("chai");
@@ -56,7 +55,6 @@ async function runTests() {
     });
 
     it('Create a user', (done) => {
-        // const expectedResponse = [user]
         request(app)
             .post('/register')
             .send(newUser)
@@ -72,7 +70,6 @@ async function runTests() {
     })
 
     it('Login with a user', (done) => {
-        // const expectedResponse = [user]
         request(app)
             .post('/login')
             .send(existingUser)
@@ -200,6 +197,19 @@ async function runTests() {
             })
     });
 
+    it("Test visiting the products page when not logged in", (done) => {
+        request(app)
+            .get('/products/new')
+            .expect(302)
+            .end((err, res) => {
+                res.text.should.contain("Redirecting to /login");
+                if (!err) {
+                    done();
+                    return;
+                }
+                done("Should not have an error");
+            })
+    });
 
 }
 
